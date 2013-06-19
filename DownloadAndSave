@@ -1,0 +1,25 @@
+#!/bin/bash
+
+#awk 'BEGIN{
+#    FS="\r";
+#    while("cat ~/urllist"|getline a && "cat ~/urlNameList"|getline b)
+#            {
+#                print "Download file from ",a," Save to ",b," \n\rBegin";
+#                curl -o b a;
+#                print "Done";
+#            };
+#}'
+# 根据下载列表文件中的每行的下载路径记录，和对应的名称列表中每行文件名称记录重命名下载的文件名。
+eval `awk 'BEGIN{
+        FS="\r";ORS=" "
+        while("cat ~/urllist"|getline a && "cat ~/urlNameList"|getline b)
+                        {
+                                #print "Download file from ",a," Save to ",b," \nBegin\n";
+                #print "mv "; print a; print " "; print b;
+                #system("mv " sub(/\/^[\/]*$/,"&",a)" " b );
+                match(a,/\/[^\/]+$/);
+                system("mv " substr(a,RSTART+1) " " b );
+                                #print "wget -O "; print b; print " -c ";print a;print " \n";
+                                #print "\nDone\n";
+                        };
+}'`

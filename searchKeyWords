@@ -1,0 +1,18 @@
+#! /bin/sh
+#文件名: searchKeyWords
+#从文件夹中的特定类型文件中查找关键字词。
+#find ../ -name \*.js -or -name \*.xml | xargs grep -i -o --color=auto sel_role
+#find ../ \( -name "*.js" -o -name "*.xml" \) -exec grep -i -o --color=auto sel_role {} \; -print >> ~/sel_role
+#searchKeyWords ../ "*" "show=\"\(false\)*\(true\)*\"" show.js    查找show="false" 和 show="true"的字段。
+
+
+for fType in "$2"
+do
+
+echo "$fType"
+
+find $1 -name "$fType" -exec grep -i -o --color=auto "$3" {} \; -print >> "$4"
+
+done
+
+vi $4

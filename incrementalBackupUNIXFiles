@@ -1,0 +1,71 @@
+#! /bin/bash -
+#IncrementalBackupUNIXFiles 增量备份UNIX格式的文件。 -q quiet; -f = [listFileName]; -t = [destFolderName]
+#命令效果同 rsync --files-from="YDZQModifyFileList2013-2-1UNIX" ./ "update/"
+IFS="
+"
+
+#startRegion Option
+while getopts ":qf:t:" optname
+do
+    case "$optname" in
+        "q")
+            quiet=1
+        ;;
+        "f")
+            listFileName=$OPTARG
+        ;;
+        "t")
+            destFolderName=$OPTARG
+        ;;
+        "?")
+            echo "unknown option $OPTARG"
+        ;;
+        ":")
+            echo "No argument value for option $OPTARG"
+        ;;
+        *)
+        #should not occur
+            echo "unknown error while processing options"
+        ;;
+    esac
+done
+
+echo $quiet
+#endRegion Option
+
+#listFileName=$OPTIND
+echo $listFileName
+#destFolderName=$OPTIND
+echo $destFolderName
+declare -a fileList
+#echo ${fileList[@]}
+#echo ${#fileList[@]}
+#echo ${#fileList}
+#echo ${fileList[2]}
+
+#while read -r line
+#do
+#    #echo $line
+#    fileList[${#fileList[@]}]="$line"
+#    #echo ${fileList[*]}
+#done < $listFileName
+#
+#for f in ${fileList[*]}
+#do
+
+#grep "^CODE/" $listFileName | while read f ; do
+LC_ALL=C sed 's/[^\x20-\x7f]//g' $listFileName | while read f ; do
+    if [ -z "$quiet" ] #if length of $quiet is 0
+    then
+        echo cp -rfi --parents "${f}" "${destFolderName}"
+    fi
+    if [ ! -d ${destFolderName} ]
+    then
+        if [ -z "$quiet" ]
+        then
+            echo mkdir ${destFolderName}
+        fi
+        mkdir ${destFolderName}
+    fi
+    cp -rfi --parents "${f}" "${destFolderName}"
+done

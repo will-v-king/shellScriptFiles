@@ -1,0 +1,12 @@
+#!/bin/bash -
+
+# require: gs pdftk
+# usage: compdf output.pdf 1.pdf 2.pdf 3.pdf
+# from:http://vastars.info/linux/script-combine-pd.html
+
+output=$1
+shift
+if [ $# -gt 1 ]
+then
+	gs -dNOPAUSE -sDEVICE=pdfwrite -sOUTPUTFILE=$output -dBATCH $*
+fi

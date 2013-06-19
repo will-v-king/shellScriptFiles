@@ -1,0 +1,7 @@
+#! /bin/sh -
+#DOSFiletoUNIXFile 将DOS格式的文件转换为UNIX格式文件。
+
+for f in "${1}"
+do
+ tr -d '\r' < $f >> "${2}"
+done
