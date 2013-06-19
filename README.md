@@ -9,7 +9,7 @@ incrementalBackupUNIXFiles		自动增量备份UNIX格式文件（需要有清单
 
 compdf		来自网络的脚本，用于合并多个PDF文件。
 
-DownloadAndSave			用于根据清单下载，并根据清单重命名文件。
+downloadAndSave			用于根据清单下载，并根据清单重命名文件。
 
 DOSFileToUNIXFile		将DOS格式文件转换为UNIX格式。（系统中dos2unix程序功能应该更加强大，可以了解。）
 
