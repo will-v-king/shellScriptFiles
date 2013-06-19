@@ -1,4 +1,5 @@
 #! /bin/bash -
+#从.htm文件中提取javascript代码（只有一段内嵌代码时），并保存到.js/目录下同名.js文件中，然后重命名.htm为.html文件，并清除内嵌javascript代码，增加js文件引用。
 jsFolderName="js"
 htmFileType=".htm"
 echo ${jsFolderName}

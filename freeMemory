@@ -1,3 +1,4 @@
 #! /bin/sh -
 #  释放内存。
+# 当内存剩余大小不足200MB时，执行释放内存。
 free -m |grep -i mem |awk '{if($4 < 200){ printf("3") > "/proc/sys/vm/drop_caches"}}';

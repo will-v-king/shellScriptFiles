@@ -1,6 +1,6 @@
 #! /bin/sh -
 
-#replaceStrInFolder --- 在指定文件夹中用指定字符串替换字符串。
+#replaceStrInFolder --- 在指定文件夹中替换指定字符串。
 #$1 要被替换的字符串正则;$2 要用于替换的字符串正则；$3要查找的文件夹
 #replaceStrInFolder "<script\ src\=\"..\/frame\/js\/publicFuncsForPage.js\"\ type\=\"text\/javascript\"><\/script>" "" .
 
