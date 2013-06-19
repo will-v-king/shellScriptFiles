@@ -2,7 +2,7 @@ shellScriptFiles
 ================
 https://github.com/will-v-king/shellScriptFiles.git
 
-my shell script files (most of them write by me)
+my shell script files (most of them are written by me)
 
 
 incrementalBackupUNIXFiles		自动增量备份UNIX格式文件（需要有清单）
