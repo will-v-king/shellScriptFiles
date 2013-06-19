@@ -1,0 +1,11 @@
+#! /bin/sh -
+
+#replaceStrInFolder --- 在指定文件夹中用指定字符串替换字符串。
+#$1 要被替换的字符串正则;$2 要用于替换的字符串正则；$3要查找的文件夹
+#replaceStrInFolder "<script\ src\=\"..\/frame\/js\/publicFuncsForPage.js\"\ type\=\"text\/javascript\"><\/script>" "" .
+
+
+sed -i "s/$1/$2/g" `grep "$1" -rl --exclude=*.svn* --exclude=*.swp "$3"`
+
+# sed -i "s/disabled=\"\(\w*\)\"/disable=\"\1\"/g" `grep "disabled=\"\w*\"" -rl --include=*2.htm "."` #将XHTML中disabled替换为disable
+#sed -i "s/\([\(set\)|\(get\)|\(toggle\)]\)Disabled/\1Disable/g" `grep "[\(set\)|\(toggle\)|\(get\)]Disabled" -rl --include=*2.htm "."` #将getDisabled\setDisabled\toggleDisabled替换为getDisable\setDisable\toggleDisable.

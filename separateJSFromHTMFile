@@ -1,0 +1,31 @@
+#! /bin/bash -
+jsFolderName="js"
+echo ${jsFolderName}
+for fileName in `grep "<script type=\"text\/javascript\">" -rl --include=*.htm --exclude=*.git* --exclude=*.svn* --exclude=*.swp --exclude=*.js* --exclude=*.html* "."`
+do
+	#echo ${PWD}
+	#echo dirname
+	#echo basename
+	mkdir -p ${jsFolderName}
+	#echo $fileName
+	jsFileName="./${jsFolderName}/"${fileName%.htm}".js"
+	#echo $jsFileName
+	#copy javascript code from htm file
+	sed -n -e "/<script\ type=\"text\/javascript\">/,/<\/script>/w ${jsFileName}" ${fileName}
+	sed -i -e '1d;$d;' ${jsFileName}
+	#rename htm file to html
+	mv ${fileName} ${fileName}'l'
+	fileName=${fileName}'l'
+	#echo $fileName
+	#rm javascript code from html file
+	
+	#regStr="\t<script type=\"text\/javascript\" src=\"${jsFileName}\">\n<\/head>"
+	#echo ${jsFileName/1/2}
+	regStr='\t<script type="text/javascript" src="'${jsFileName}'"></script>\n</head>'
+	regStr=${regStr//\//\\\/}
+	regStr=${regStr//\ /\\\ }
+	echo ${regStr}
+	sed -i -e "/<script\ type=\"text\/javascript\">/,/<\/script>/g" -e "/^$/d" -e "s/<\/head>/${regStr}/g" ${fileName}
+	#sed -i -e "/<script\ type=\"text\/javascript\">/,/<\/script>/g" -e "/^$/d" ${fileName}
+	#sed -i -e "s/<\/head>/${regStr}/g" ${fileName}
+done
