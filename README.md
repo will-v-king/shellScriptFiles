@@ -22,3 +22,6 @@ freeMemory		检查内存剩余空间，并在内存空间不足时释放系统�
 separateJSFromHTMFile		从.htm文件中提取javascript代码（只有一段内嵌代码时），并保存到.js/目录下同名.js文件中，然后重命名.htm为.html文件，并清除内嵌javascript代码，增加js文件引用。
 
 replaceStrInFolder		在指定文件夹中替换指定字符串。
+
+collectKeywords		从文件中，分析出用到的Keywords。
+		 #文件名: collectKeywords -p = [path]; -t = [fileTypes]; -r = [regularExpressionOfKeywords]  -f = [targetFileName]

@@ -1,0 +1,91 @@
+#! /bin/bash
+#文件名: collectKeywords -p = [path]; -t = [fileTypes]; -r = [regularExpressionOfKeywords]  -f = [targetFileName]
+#从文件中，分析出用到的Keywords。
+
+LC_ALL=C
+## startDefault Value
+regularExp="[0-9]\{8\}"
+## endDefault Value
+## startRegion Option
+while getopts "p:t:r:f:" optname
+do
+    case "$optname" in
+        "p")
+            path=$OPTARG
+        ;;
+        "t")
+            fileTypes=$OPTARG
+        ;;
+		"r")
+			regularExp=$OPTARG
+		;;
+        "f")
+            targetFileName=$OPTARG
+        ;;
+        "?")
+            echo "unknown option $OPTARG"
+        ;;
+        ":")
+            echo "No argument value for option $OPTARG"
+        ;;
+        *)
+        ## should not occur
+            echo "unknown error while processing options"
+        ;;
+    esac
+done
+#echo $path
+#echo $fileTypes
+#echo $regularExp
+#echo $targetFileName
+
+## endRegion Option
+
+## collect key words in folder
+for fType in "$fileTypes"
+do
+
+	echo "$fType"
+
+	#find $path -name "$fType" -exec grep -isoh --exclude=*.swp --exclude=*.git* --exclude=*.svn* --color=auto "${regularExp}" {} \; -print >> ${targetFileName} #with found file names
+	grep ${regularExp} -isorh --include=${fType} ${path} >> ${targetFileName}
+
+done
+
+## delete unuseful info
+#sed -i -e "/.\{9,\}\|[^0-9]\{1,\}/d" ${targetFileName}
+
+## remove repeated keywords
+declare -a keywordAry=()
+echo ${#keywordAry[@]}
+IFS=" ";
+while read keyword
+do
+	#echo ${keywordAry[@]/${keyword}/}
+	tmpA=( ${keywordAry[@]/${keyword}/} )
+	if [ ${#tmpA[@]} -eq ${#keywordAry[@]} ];
+	then
+		keywordAry=(${keywordAry[@]} ${keyword})
+	#else
+		#echo "keyword"
+		#echo ${keyword}
+		#echo "tmpA"
+		#echo ${tmpA[@]}
+		#echo ${#tmpA[@]}
+		#echo "keywordAry"
+		#echo ${keywordAry[@]}
+		#echo ${#keywordAry[@]}
+	fi
+done < ${targetFileName}
+#echo ${#keywordAry[@]}
+#OFS="|"
+#ORS="|"
+#IFS=" "
+#IRS=" "
+#echo ${IFS}|od
+#echo ${OFS}|od
+
+## write result to target file
+echo ${keywordAry[@]}|tr " " "\n" > ${targetFileName}
+
+vi ${targetFileName}
