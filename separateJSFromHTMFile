@@ -6,11 +6,11 @@ echo ${jsFolderName}
 for fileName in `grep "<script type=\"text\/javascript\">" -rl --include=*${htmFileType} --exclude=*.git* --exclude=*.svn* --exclude=*.swp --exclude=*.js* --exclude=*.html* "."`
 do
 	mkdir -p ${jsFolderName}
-	echo "Found ${htmFileType} file: $fileName"
+	echo "Found ${htmFileType} file: ${fileName}"
 	jsFileName="./${jsFolderName}/"${fileName%${htmFileType}}".js"
 	#copy javascript code from htm file
 	sed -n -e "/<script\ type=\"text\/javascript\">/,/<\/script>/w ${jsFileName}" ${fileName}
-	sed -i -e '1d;$d;' ${jsFileName}
+	sed -i -e "/<script\ type=\"text\/javascript\">$/d" -e "/<\/script>$/d" ${jsFileName}
 	echo ".js file:"${jsFileName}" is created."
 	#rename htm file to html
 	mv ${fileName} ${fileName}'l'
