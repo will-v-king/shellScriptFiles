@@ -24,4 +24,5 @@ separateJSFromHTMFile		从.htm文件中提取javascript代码（只有一段内�
 replaceStrInFolder		在指定文件夹中替换指定字符串。
 
 collectKeywords		从文件中，分析出用到的Keywords。
-		 #文件名: collectKeywords -p = [path]; -t = [fileTypes]; -r = [regularExpressionOfKeywords]  -f = [targetFileName]
+
+		#文件名: collectKeywords -p = [path]; -f = [fileTypes]/[from]; -r = [regularExpressionOfKeywords];  -t = [targetFileName]/[to];
