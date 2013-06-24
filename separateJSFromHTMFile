@@ -1,5 +1,6 @@
 #! /bin/bash -
 #从.htm文件中提取javascript代码（只有一段内嵌代码时），并保存到.js/目录下同名.js文件中，然后重命名.htm为.html文件，并清除内嵌javascript代码，增加js文件引用。
+LC_ALL=C
 path="."
 jsFolderName="js"
 sourceHTMLFileType=".htm"
@@ -69,31 +70,36 @@ fi
 ## ENDRegion LongOption
 
 # pre-format parameters
-jsFolderName=${jsFolderName%%\/*}
 path=${path%\/}"/"
+jsFolderName=${jsFolderName%%\/*}
+echo $path
+echo $jsFolderName
 for fileName in $(grep "<script type=\"text\/javascript\">" -rl --include=*${sourceHTMLFileType} --exclude=*.git* --exclude=*.svn* --exclude=*.swp ${path})
 do
+	echo ">>--------------------------"
 	#pre-deal $fileName
 	fileName=${fileName#${path}}
 	#create folder for .js file
-	mkdir -p ${jsFolderName}
+	mkdir -p ${path}${jsFolderName}
 	echo "Found ${sourceHTMLFileType} file: ${fileName}"
-	jsFileName="./${jsFolderName}/"${fileName##.*\/%${sourceHTMLFileType}}".js"
-	#copy javascript code from htm file
-	sed -n -e "/<script\ type=\"text\/javascript\">/,/<\/script>/w ${jsFileName}" ${fileName}
-	sed -i -e "/<script\ type=\"text\/javascript\">$/d" -e "/<\/script>$/d" ${jsFileName}
-	echo ".js file:"${jsFileName}" is created."
+	jsFileName=${fileName##.*\/}
+	jsFileName=${jsFileName%${sourceHTMLFileType}}".js"
+	#copy javascript code from htm file and write to js file.
+	jsFileDir=${path}${jsFolderName}"/"${jsFileName}
+	echo "--> jsFileDir: "${jsFileDir}
+	sed -n -e "/<script\ type=\"text\/javascript\">/,/<\/script>/w ${jsFileDir}" ${path}${fileName}
+	sed -i -e "/<script\ type=\"text\/javascript\">$/d" -e "/<\/script>$/d" ${jsFileDir}
+	echo ".js file:"${jsFileDir}" is created."
 	#rename htm file to html
-	mv ${fileName} ${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}
-	echo "${fileName} is renamed to ${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}"
+	mv ${path}${fileName} ${path}${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}
+	echo "${path}${fileName} is renamed to ${path}${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}"
 	fileName=${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}
 	#rm javascript code from html file
-	#regStr="\t<script type=\"text\/javascript\" src=\"${jsFileName}\">\n<\/head>"
-	regStr='\t<script type="text/javascript" src="'${jsFileName}'"></script>\n</head>'
+	regStr='\t<script type="text/javascript" src="'${jsFolderName}'/'${jsFileName}'"></script>\n</head>'
 	regStr=${regStr//\//\\\/}
 	regStr=${regStr//\ /\\\ }
-	sed -i -e "/<script\ type=\"text\/javascript\">/,/<\/script>/g" -e "/^$/d" -e "s/<\/head>/${regStr}/g" ${fileName}
-	echo "Removed js code from htm file."
+	sed -i -e "/<script\ type=\"text\/javascript\">/,/<\/script>/g" -e "/^$/d" -e "s/<\/head>/${regStr}/g" ${path}${fileName}
+	echo "Removed js code from ${sourceHTMLFileType} file."
 	#sed -i -e "/<script\ type=\"text\/javascript\">/,/<\/script>/g" -e "/^$/d" ${fileName}
 	#sed -i -e "s/<\/head>/${regStr}/g" ${fileName}
 done
