@@ -1,11 +1,13 @@
 #! /bin/bash
-#文件名: collectKeywords -p = [path]; -t = [fileTypes]; -r = [regularExpressionOfKeywords]  -f = [targetFileName]
+#文件名: collectKeywords -p = [path]; -f = [fileTypes]/[from]; -r = [regularExpressionOfKeywords];  -t = [targetFileName]/[to];
 #从文件中，分析出用到的Keywords。
+#example:	collectKeywords -p ~/Workspace/KCCS_V13/CODE/webapp/page/desktopAdmin/ -f "*.js" -t "js.js"
 
 LC_ALL=C
 ## startDefault Value
 regularExp="[0-9]\{8\}"
 ## endDefault Value
+
 ## startRegion Option
 while getopts "p:t:r:f:" optname
 do
@@ -34,11 +36,6 @@ do
         ;;
     esac
 done
-#echo $path
-#echo $fileTypes
-#echo $regularExp
-#echo $targetFileName
-
 ## endRegion Option
 
 ## collect key words in folder
@@ -47,13 +44,11 @@ do
 
 	echo "$fType"
 
+	#this will get file name
 	#find $path -name "$fType" -exec grep -isoh --exclude=*.swp --exclude=*.git* --exclude=*.svn* --color=auto "${regularExp}" {} \; -print >> ${targetFileName} #with found file names
 	grep ${regularExp} -isorh --include=${fType} ${path} >> ${targetFileName}
 
 done
-
-## delete unuseful info
-#sed -i -e "/.\{9,\}\|[^0-9]\{1,\}/d" ${targetFileName}
 
 ## remove repeated keywords
 declare -a keywordAry=()
@@ -61,30 +56,14 @@ echo ${#keywordAry[@]}
 IFS=" ";
 while read keyword
 do
-	#echo ${keywordAry[@]/${keyword}/}
 	tmpA=( ${keywordAry[@]/${keyword}/} )
 	if [ ${#tmpA[@]} -eq ${#keywordAry[@]} ];
 	then
 		keywordAry=(${keywordAry[@]} ${keyword})
-	#else
-		#echo "keyword"
-		#echo ${keyword}
-		#echo "tmpA"
-		#echo ${tmpA[@]}
-		#echo ${#tmpA[@]}
-		#echo "keywordAry"
-		#echo ${keywordAry[@]}
-		#echo ${#keywordAry[@]}
+	else
+		echo ${keyword}" +1."
 	fi
 done < ${targetFileName}
-#echo ${#keywordAry[@]}
-#OFS="|"
-#ORS="|"
-#IFS=" "
-#IRS=" "
-#echo ${IFS}|od
-#echo ${OFS}|od
-
 ## write result to target file
 echo ${keywordAry[@]}|tr " " "\n" > ${targetFileName}
 
