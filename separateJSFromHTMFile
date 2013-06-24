@@ -1,21 +1,55 @@
 #! /bin/bash -
 #从.htm文件中提取javascript代码（只有一段内嵌代码时），并保存到.js/目录下同名.js文件中，然后重命名.htm为.html文件，并清除内嵌javascript代码，增加js文件引用。
+path="."
 jsFolderName="js"
-htmFileType=".htm"
-echo ${jsFolderName}
-for fileName in `grep "<script type=\"text\/javascript\">" -rl --include=*${htmFileType} --exclude=*.git* --exclude=*.svn* --exclude=*.swp --exclude=*.js* --exclude=*.html* "."`
+sourceHTMLFileType=".htm"
+destinationHTMLFileType=".html"
+## startRegion Option
+while getopts "p:t:r:f:" optname
 do
+    case "$optname" in
+        "p")
+            path=$OPTARG
+        ;;
+        "s")
+            sourceHTMLFileType=$OPTARG
+        ;;
+		"d")
+			destinationHTMLFileType=$OPTARG
+		;;
+        "f")
+            targetFileName=$OPTARG
+        ;;
+        "?")
+            echo "unknown option $OPTARG"
+        ;;
+        ":")
+            echo "No argument value for option $OPTARG"
+        ;;
+        *)
+        ## should not occur
+            echo "unknown error while processing options"
+        ;;
+    esac
+done
+## endRegion Option
+echo ${jsFolderName}
+for fileName in $(grep "<script type=\"text\/javascript\">" -rl --include=*${sourceHTMLFileType} --exclude=*.git* --exclude=*.svn* --exclude=*.swp ${path})
+do
+	#pre deal $fileName
+	fileName=${fileName#${path}}
+	#create folder for .js file
 	mkdir -p ${jsFolderName}
-	echo "Found ${htmFileType} file: ${fileName}"
-	jsFileName="./${jsFolderName}/"${fileName%${htmFileType}}".js"
+	echo "Found ${sourceHTMLFileType} file: ${fileName}"
+	jsFileName="./${jsFolderName}/"${fileName%${sourceHTMLFileType}}".js"
 	#copy javascript code from htm file
 	sed -n -e "/<script\ type=\"text\/javascript\">/,/<\/script>/w ${jsFileName}" ${fileName}
 	sed -i -e "/<script\ type=\"text\/javascript\">$/d" -e "/<\/script>$/d" ${jsFileName}
 	echo ".js file:"${jsFileName}" is created."
 	#rename htm file to html
-	mv ${fileName} ${fileName}'l'
-	echo "${fileName} is renamed to ${fileName}l"
-	fileName=${fileName}'l'
+	mv ${fileName} ${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}
+	echo "${fileName} is renamed to ${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}"
+	fileName=${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}
 	#rm javascript code from html file
 	#regStr="\t<script type=\"text\/javascript\" src=\"${jsFileName}\">\n<\/head>"
 	regStr='\t<script type="text/javascript" src="'${jsFileName}'"></script>\n</head>'
