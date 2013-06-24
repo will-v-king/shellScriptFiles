@@ -3,45 +3,82 @@
 path="."
 jsFolderName="js"
 sourceHTMLFileType=".htm"
-destinationHTMLFileType=".html"
-## startRegion Option
-while getopts "p:t:r:f:" optname
-do
-    case "$optname" in
-        "p")
-            path=$OPTARG
-        ;;
-        "s")
-            sourceHTMLFileType=$OPTARG
-        ;;
-		"d")
-			destinationHTMLFileType=$OPTARG
-		;;
-        "f")
-            targetFileName=$OPTARG
-        ;;
-        "?")
-            echo "unknown option $OPTARG"
-        ;;
-        ":")
-            echo "No argument value for option $OPTARG"
-        ;;
-        *)
-        ## should not occur
-            echo "unknown error while processing options"
-        ;;
-    esac
+destinationHTMLFileType=".htm"
+### startRegion Option
+#while getopts "p:t:r:f:" optname
+#do
+#    case "$optname" in
+#        "p")
+#            path=$OPTARG
+#        ;;
+#        "s")
+#            sourceHTMLFileType=$OPTARG
+#        ;;
+#		"d")
+#			destinationHTMLFileType=$OPTARG
+#		;;
+#        "f")
+#            targetFileName=$OPTARG
+#        ;;
+#        "?")
+#            echo "unknown option $OPTARG"
+#        ;;
+#        ":")
+#            echo "No argument value for option $OPTARG"
+#        ;;
+#        *)
+#        ## should not occur
+#            echo "unknown error while processing options"
+#        ;;
+#    esac
+#done
+### endRegion Option
+## STARTRegion LongOption
+# from /usr/share/doc/util-linux/examples/getopt-parse.bash
+# Note that we use `"$@"' to let each command-line parameter expand to a 
+# separate word. The quotes around `$@' are essential!
+# We need TEMP as the `eval set --' would nuke the return value of getopt.
+TEMP=`getopt -o p:s:d: --long path:,sourceHTMLFileType:,destinationHTMLFileType: \
+     -n 'example.bash' -- "$@"`
+
+if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+while true ; do
+	case "$1" in
+		-p|--path) path=$2 ; shift 2 ;;
+		-s|--sourceHTMLFileType) sourceHTMLFileType=$2 ; shift 2 ;;
+			## c has an optional argument. As we are in quoted mode,
+			## an empty parameter will be generated if its optional
+			## argument is not found.
+			#case "$2" in
+			#	"") echo "Option sourceHTMLFileType, no argument"; shift 2 ;;
+			#	*)  echo "Option sourceHTMLFileType, argument \`$2'"; sourceHTMLFileType=$2 ; shift 2 ;;
+			#esac ;;
+		-d|--destinationHTMLFileType) destinationHTMLFileType=$2 ; shift 2 ;;
+		--) shift ; break ;;
+		*) echo "Internal error!" ; exit 1 ;;
+	esac
 done
-## endRegion Option
-echo ${jsFolderName}
+if [ 0 -ne ${#1} ];
+then
+	echo "Remaining arguments:";
+	for arg do echo '--> '"\`$arg'" ; done
+fi
+## ENDRegion LongOption
+
+# pre-format parameters
+jsFolderName=${jsFolderName%%\/*}
+path=${path%\/}"/"
 for fileName in $(grep "<script type=\"text\/javascript\">" -rl --include=*${sourceHTMLFileType} --exclude=*.git* --exclude=*.svn* --exclude=*.swp ${path})
 do
-	#pre deal $fileName
+	#pre-deal $fileName
 	fileName=${fileName#${path}}
 	#create folder for .js file
 	mkdir -p ${jsFolderName}
 	echo "Found ${sourceHTMLFileType} file: ${fileName}"
-	jsFileName="./${jsFolderName}/"${fileName%${sourceHTMLFileType}}".js"
+	jsFileName="./${jsFolderName}/"${fileName##.*\/%${sourceHTMLFileType}}".js"
 	#copy javascript code from htm file
 	sed -n -e "/<script\ type=\"text\/javascript\">/,/<\/script>/w ${jsFileName}" ${fileName}
 	sed -i -e "/<script\ type=\"text\/javascript\">$/d" -e "/<\/script>$/d" ${jsFileName}
