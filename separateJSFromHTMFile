@@ -39,7 +39,7 @@ destinationHTMLFileType=".htm"
 # Note that we use `"$@"' to let each command-line parameter expand to a 
 # separate word. The quotes around `$@' are essential!
 # We need TEMP as the `eval set --' would nuke the return value of getopt.
-TEMP=`getopt -o p:s:d: --long path:,sourceHTMLFileType:,destinationHTMLFileType: \
+TEMP=`getopt -o p:s:d:j: --long path:,sourceHTMLFileType:,destinationHTMLFileType:,jsFolderName: \
      -n 'example.bash' -- "$@"`
 
 if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
@@ -58,6 +58,7 @@ while true ; do
 			#	*)  echo "Option sourceHTMLFileType, argument \`$2'"; sourceHTMLFileType=$2 ; shift 2 ;;
 			#esac ;;
 		-d|--destinationHTMLFileType) destinationHTMLFileType=$2 ; shift 2 ;;
+		-j|--jsFolderName) jsFolderName=$2 ; shift 2 ;;
 		--) shift ; break ;;
 		*) echo "Internal error!" ; exit 1 ;;
 	esac
@@ -74,7 +75,7 @@ path=${path%\/}"/"
 jsFolderName=${jsFolderName%%\/*}
 echo $path
 echo $jsFolderName
-for fileName in $(grep "<script type=\"text\/javascript\">" -rl --include=*${sourceHTMLFileType} --exclude=*.git* --exclude=*.svn* --exclude=*.swp ${path})
+for fileName in $(grep "<script type=\"text\/javascript\">" -rl --exclude=*.git* --exclude=*.svn* --exclude=*.swp --include=*${sourceHTMLFileType} ${path})
 do
 	echo ">>--------------------------"
 	#pre-deal $fileName
@@ -82,18 +83,19 @@ do
 	#create folder for .js file
 	mkdir -p ${path}${jsFolderName}
 	echo "Found ${sourceHTMLFileType} file: ${fileName}"
-	jsFileName=${fileName##.*\/}
-	jsFileName=${jsFileName%${sourceHTMLFileType}}".js"
+	jsFileName=${fileName##*/}
+	jsFileName=${jsFileName%${sourceHTMLFileType##*.}}"js"
 	#copy javascript code from htm file and write to js file.
 	jsFileDir=${path}${jsFolderName}"/"${jsFileName}
-	echo "--> jsFileDir: "${jsFileDir}
+	dos2unix ${path}${fileName}
 	sed -n -e "/<script\ type=\"text\/javascript\">/,/<\/script>/w ${jsFileDir}" ${path}${fileName}
+	dos2unix ${jsFileDir}
 	sed -i -e "/<script\ type=\"text\/javascript\">$/d" -e "/<\/script>$/d" ${jsFileDir}
 	echo ".js file:"${jsFileDir}" is created."
 	#rename htm file to html
-	mv ${path}${fileName} ${path}${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}
-	echo "${path}${fileName} is renamed to ${path}${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}"
-	fileName=${fileName%${sourceHTMLFileType}}${destinationHTMLFileType}
+	mv ${path}${fileName} ${path}${fileName%${sourceHTMLFileType##*.}}${destinationHTMLFileType##*.}
+	echo "${path}${fileName} is renamed to ${path}${fileName%${sourceHTMLFileType##*.}}${destinationHTMLFileType##*.}"
+	fileName=${fileName%${sourceHTMLFileType##*.}}${destinationHTMLFileType##*.}
 	#rm javascript code from html file
 	regStr='\t<script type="text/javascript" src="'${jsFolderName}'/'${jsFileName}'"></script>\n</head>'
 	regStr=${regStr//\//\\\/}
