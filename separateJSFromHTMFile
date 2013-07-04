@@ -73,29 +73,48 @@ fi
 # pre-format parameters
 path=${path%\/}"/"
 jsFolderName=${jsFolderName%%\/*}
-echo $path
-echo $jsFolderName
+echo "path: "$path
+echo "js folder name: "$jsFolderName
 for fileName in $(grep "<script type=\"text\/javascript\">" -rl --exclude=*.git* --exclude=*.svn* --exclude=*.swp --include=*${sourceHTMLFileType} ${path})
 do
 	echo ">>--------------------------"
 	#pre-deal $fileName
 	fileName=${fileName#${path}}
-	#create folder for .js file
-	mkdir -p ${path}${jsFolderName}
 	echo "Found ${sourceHTMLFileType} file: ${fileName}"
+	dos2unix -q ${path}${fileName}
+	#create folder for .js file
+	if [ -d ${path}${jsFolderName} ]
+	then
+		echo "Found directory: ${jsFolderName} in path: ${path}";
+	else
+		mkdir -p ${path}${jsFolderName};
+		echo "Made directory: ${jsFolderName} in path: ${path}";
+	fi
 	jsFileName=${fileName##*/}
 	jsFileName=${jsFileName%${sourceHTMLFileType##*.}}"js"
 	#copy javascript code from htm file and write to js file.
 	jsFileDir=${path}${jsFolderName}"/"${jsFileName}
-	dos2unix ${path}${fileName}
 	sed -n -e "/<script\ type=\"text\/javascript\">/,/<\/script>/w ${jsFileDir}" ${path}${fileName}
-	dos2unix ${jsFileDir}
+	dos2unix -q ${jsFileDir}
 	sed -i -e "/<script\ type=\"text\/javascript\">$/d" -e "/<\/script>$/d" ${jsFileDir}
 	echo ".js file:"${jsFileDir}" is created."
-	#rename htm file to html
-	mv ${path}${fileName} ${path}${fileName%${sourceHTMLFileType##*.}}${destinationHTMLFileType##*.}
-	echo "${path}${fileName} is renamed to ${path}${fileName%${sourceHTMLFileType##*.}}${destinationHTMLFileType##*.}"
-	fileName=${fileName%${sourceHTMLFileType##*.}}${destinationHTMLFileType##*.}
+	#rename htm file
+	sourceFileDir=${path}${fileName}
+	destFileDir=${path}${fileName%${sourceHTMLFileType##*.}}${destinationHTMLFileType##*.}
+	if [ ${destFileDir} != ${sourceFileDir} ]
+	then
+		mv -i ${sourceFileDir} ${destFileDir}
+	fi
+	if [ -f ${sourceFileDir} ]
+	then
+		echo "${sourceFileDir} is not renamed.";
+	elif [ -f ${destFileDir} ]
+	then
+		echo "${sourceFileDir} is renamed as ${destFileDir}";
+		fileName=${fileName%${sourceHTMLFileType##*.}}${destinationHTMLFileType##*.};
+	else
+		echo "${sourceFileDir} lost!";
+	fi
 	#rm javascript code from html file
 	regStr='\t<script type="text/javascript" src="'${jsFolderName}'/'${jsFileName}'"></script>\n</head>'
 	regStr=${regStr//\//\\\/}
@@ -104,5 +123,6 @@ do
 	echo "Removed js code from ${sourceHTMLFileType} file."
 	#sed -i -e "/<script\ type=\"text\/javascript\">/,/<\/script>/g" -e "/^$/d" ${fileName}
 	#sed -i -e "s/<\/head>/${regStr}/g" ${fileName}
+	echo "-------------------------<<"
 done
 echo "Done."
