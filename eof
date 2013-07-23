@@ -1,0 +1,6 @@
+#! /bin/bash -
+stty -echo
+read str
+stty echo
+${str}
+#exec ${str}

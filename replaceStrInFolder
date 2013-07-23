@@ -6,7 +6,7 @@
 
 
 #sed -i "s/$1/$2/g" `grep "$1" -rl --exclude=*.svn* --exclude=*.swp "$3"`
-sed -i "s/$1/$2/g" $(grep "$1" -rl --exclude=*.svn* --exclude=*.swp "$3")
+sed -i "s/$1/$2/g" $(grep "$1" -rl --exclude=*.svn* --exclude=*.swp "$3" --exclude=*.git* --exclude=*.bak)
 
 # sed -i "s/disabled=\"\(\w*\)\"/disable=\"\1\"/g" `grep "disabled=\"\w*\"" -rl --include=*2.htm "."` #将XHTML中disabled替换为disable
 # sed -i "s/\([\(set\)|\(get\)|\(toggle\)]\)Disabled/\1Disable/g" `grep "[\(set\)|\(toggle\)|\(get\)]Disabled" -rl --include=*2.htm "."` #将getDisabled\setDisabled\toggleDisabled替换为getDisable\setDisable\toggleDisable.
