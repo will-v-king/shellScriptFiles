@@ -1,0 +1,63 @@
+#! /bin/bash -
+# 用于读取JSON格式配置文件，并返回可读值。 
+LC_ALL=C
+PRG="$0"
+PRGDIR=`dirname "${PRG}"`"/"
+path="."
+fileName="config"
+fileType=".json"
+## STARTRegion LongOption
+# from /usr/share/doc/util-linux/examples/getopt-parse.bash
+# Note that we use `"$@"' to let each command-line parameter expand to a 
+# separate word. The quotes around `$@' are essential!
+# We need TEMP as the `eval set --' would nuke the return value of getopt.
+TEMP=`getopt -o p:f:t: --long path:,fileName:,fileType: \
+     -n 'example.bash' -- "$@"`
+
+if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+# Note the quotes around `$TEMP': they are essential!
+eval set -- "$TEMP"
+
+while true ; do
+	case "$1" in
+		-p|--path) path=$2 ; shift 2 ;;
+		-f|--fileName) fileName=$2 ; shift 2 ;;
+			## c has an optional argument. As we are in quoted mode,
+			## an empty parameter will be generated if its optional
+			## argument is not found.
+			#case "$2" in
+			#	"") echo "Option sourceHTMLFileType, no argument"; shift 2 ;;
+			#	*)  echo "Option sourceHTMLFileType, argument \`$2'"; sourceHTMLFileType=$2 ; shift 2 ;;
+			#esac ;;
+		-t|--fileType) fileType=$2 ; shift 2 ;;
+		--) shift ; break ;;
+		*) echo "Internal error!" ; exit 1 ;;
+	esac
+done
+if [ 0 -ne ${#1} ];
+then
+	echo "Remaining arguments:";
+	for arg do echo '--> '"\`$arg'" ; done
+fi
+## ENDRegion LongOption
+
+## BEGIN pre-format parameters
+path=${path%\/}"/"
+fileName=${fileName}
+fileType="."${fileType#.} # make suer that file type begin with dot
+fileDir=${path}${fileName}${fileType}
+## END pre-format parameters
+## BEGIN deal the status of config file's existence.
+function dealTheExistenceOfConfigFile(){
+	if [ -f ${fileDir} ]; then
+		#echo "found ${fileDir} .";
+		cat ${fileDir} | python -c 'import json,sys;obj=json.load(sys.stdin);print json.dumps(obj)';
+	else
+		echo "${fileDir} not found.";
+	fi
+}
+## END deal the status of config file's existence.
+## BEGIN to execute
+dealTheExistenceOfConfigFile
+#echo "Done."
+## END of execute
