@@ -4,6 +4,7 @@
 #find ../ -name \*.js -or -name \*.xml | xargs grep -i -o --color=auto sel_role
 #find ../ \( -name "*.js" -o -name "*.xml" \) -exec grep -i -o --color=auto sel_role {} \; -print >> ~/sel_role
 #searchKeyWords ../ "*" "show=\"\(false\)*\(true\)*\"" show.js    查找show="false" 和 show="true"的字段。
+#searchKeyWords ./ "*" "\(\(ins\)\|\(sel\)\|\(upd\)\)\{1\}_user" ins_sel_upd_user.js     查找ins_user,sel_user,upd_user字段
 
 
 for fType in "$2"
