@@ -2,7 +2,7 @@ shellScriptFiles
 ================
 https://github.com/will-v-king/shellScriptFiles.git
 
-#my shell script files (most of them are written by me)
+##my shell script files (not all of them are written by me)
 
 ###DOSFileToUNIXFile		将DOS格式文件转换为UNIX格式。（系统中dos2unix程序功能应该更加强大，推荐了解。）
 
