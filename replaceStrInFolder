@@ -6,7 +6,19 @@
 
 
 #sed -i "s/$1/$2/g" `grep "$1" -rl --exclude=*.svn* --exclude=*.swp "$3"`
-sed -i "s/$1/$2/g" $(grep "$1" -rl --exclude=*.svn* --exclude=*.swp "$3" --exclude=*.git* --exclude=*.bak)
+sourceFile=${3};
+if [ -f ${sourceFile} ];
+then
+	while read -r line ;
+	do
+		echo ${line};
+		sed -i "s/$1/$2/g" $(grep "$1" -rl --exclude=*.svn* --exclude=*.swp "${line}" --exclude=*.git* --exclude=*.bak --exclude-dir=.svn --exclude-dir=.git)
+	done < "${sourceFile}";
+else
+	echo ${sourceFile} " is not a regular file.";
+	sed -i "s/$1/$2/g" $(grep "$1" -rl --exclude=*.svn* --exclude=*.swp "${sourceFile}" --exclude=*.git* --exclude=*.bak --exclude-dir=.svn --exclude-dir=.git)
+fi
+# sed -i "s/$1/$2/g" $(grep "$1" -rl --exclude=*.svn* --exclude=*.swp "$3" --exclude=*.git* --exclude=*.bak --exclude-dir=.svn --exclude-dir=.git)
 
 # sed -i "s/disabled=\"\(\w*\)\"/disable=\"\1\"/g" `grep "disabled=\"\w*\"" -rl --include=*2.htm "."` #将XHTML中disabled替换为disable
 # sed -i "s/\([\(set\)|\(get\)|\(toggle\)]\)Disabled/\1Disable/g" `grep "[\(set\)|\(toggle\)|\(get\)]Disabled" -rl --include=*2.htm "."` #将getDisabled\setDisabled\toggleDisabled替换为getDisable\setDisable\toggleDisable.
