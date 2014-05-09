@@ -1,0 +1,10 @@
+#! /bin/bash -
+startbcpnet(){
+	local result="startbcpnet result: ";
+	sudo route add -net 192.168.0.0 gw 192.168.4.1 netmask 255.255.0.0 metric 25;
+	sudo route add -net 192.168.1.0 gw 192.168.4.1 netmask 255.255.255.0 metric 25;
+	result=${result}$(echo '' && route |grep 192.168.4.1);
+	echo -n ${result};
+	notify-send "${result}";
+}
+startbcpnet;
