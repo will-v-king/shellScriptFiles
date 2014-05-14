@@ -6,14 +6,17 @@
 #searchKeyWords ../ "*" "show=\"\(false\)*\(true\)*\"" show.js    查找show="false" 和 show="true"的字段。
 #searchKeyWords ./ "*" "\(\(ins\)\|\(sel\)\|\(upd\)\)\{1\}_user" ins_sel_upd_user.js     查找ins_user,sel_user,upd_user字段
 temp=${IFS}:
-IFS=" ";
+IFS=" 
+";
 
-for fType in ${2}
+for fType in "${2}"
 do
 
-echo "${fType}"
+echo -n "["
+echo -n "${fType}"
+echo "]"
 
-find $1 -name "$fType" -exec grep -i -o --color=auto --exclude-dir=.svn --exclude=.swp --exclude-dir=.metadata "$3" {} \; -print >> "$4"
+find $1 -name "$fType" -exec grep -i -o -s --color=auto --exclude-dir=.svn --exclude=.swp --exclude-dir=.metadata "$3" {} \; -print >> "$4"
 
 done
 
