@@ -6,29 +6,11 @@ startbcpnet(){
 	sudo route add -net 172.16.10.0		 gw "${gw}" netmask 255.255.255.0 metric 25;
 	sudo route add -net 221.237.182.205	 gw "${gw}" netmask 255.255.255.255 metric 25;
 	sudo route add -net 54.230.23.0		 gw "${gw}" netmask 255.255.255.0 metric 25; # docs.sencha.com
-	getIPbyDomain(){
-		local domainAddr=${1};
-		local ipAddr=$(nslookup "${domainAddr}" |grep Address:[[:space:]][0-9.]*$);
-		ipAddr=${ipAddr//Address:/};
-		echo "${ipAddr}";
-	}
 		#local docs_sencha_com=$(nslookup docs.sencha.com |grep Address:[[:space:]][0-9.]*$);
 		#echo ${docs_sencha_com//Address:/}
-	addIPtoRouteByDomain(){
-		local domainAddr=${1};
-		local ipAddr=$(getIPbyDomain "${domainAddr}");
-		local gw=${2};
-		for f in ${ipAddr}
-		do
-			case "${f}" in
-				"")
-					continue ;;
-				*)  sudo route add -net "${f}"	gw "${gw}" netmask 255.255.255.255 metric 25; echo -n "add ${f} "; ;;
-			esac
-		done;
-	}
-	addIPtoRouteByDomain "docs.sencha.com" "${gw}";
-	addIPtoRouteByDomain "dict.youdao.com" "${gw}";
+	echo $(addIPtoRouteByDomain "docs.sencha.com" "${gw}");
+	echo $(addIPtoRouteByDomain "dict.youdao.com" "${gw}");
+	echo $(addIPtoRouteByDomain "subclipse.tigris.org" "${gw}"); #eclipse subclipse plugin.;
 #	for f in ${docs_sencha_com}
 #	do
 #		f=${f#Address:};

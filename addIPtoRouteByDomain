@@ -1,0 +1,21 @@
+#! /bin/bash -
+addIPtoRouteByDomain(){
+	getIPbyDomain(){
+		local domainAddr=${1};
+		local ipAddr=$(nslookup "${domainAddr}" |grep Address:[[:space:]][0-9.]*$);
+		ipAddr=${ipAddr//Address:/};
+		echo "${ipAddr}";
+	}
+	local domainAddr=${1};
+	local ipAddr=$(getIPbyDomain "${domainAddr}");
+	local gw=${2};
+	for f in ${ipAddr}
+	do
+		case "${f}" in
+			"")
+				continue ;;
+			*)  sudo route add -net "${f}"	gw "${gw}" netmask 255.255.255.255 metric 25; echo -n "add ${f} "; ;;
+		esac
+	done;
+}
+addIPtoRouteByDomain ${1} ${2};
