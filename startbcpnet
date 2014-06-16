@@ -4,6 +4,7 @@ startbcpnet(){
 	local result="startbcpnet result: ";
 	sudo route add -net 192.168.0.0		 gw "${gw}" netmask 255.255.0.0 metric 25;
 	sudo route add -net 172.16.10.0		 gw "${gw}" netmask 255.255.255.0 metric 25;
+	sudo route add -net 125.69.90.49	 gw "${gw}" netmask 255.255.255.255 metric 25;
 	sudo route add -net 221.237.182.205	 gw "${gw}" netmask 255.255.255.255 metric 25;
 	sudo route add -net 54.230.23.0		 gw "${gw}" netmask 255.255.255.0 metric 25; # docs.sencha.com
 		#local docs_sencha_com=$(nslookup docs.sencha.com |grep Address:[[:space:]][0-9.]*$);
@@ -11,6 +12,20 @@ startbcpnet(){
 	echo $(addIPtoRouteByDomain "docs.sencha.com" "${gw}");
 	echo $(addIPtoRouteByDomain "dict.youdao.com" "${gw}");
 	echo $(addIPtoRouteByDomain "subclipse.tigris.org" "${gw}"); #eclipse subclipse plugin.;
+	echo $(addIPtoRouteByDomain "www.xinhuanet.com" "${gw}");
+	echo $(addIPtoRouteByDomain "cnblogs.com" "${gw}");
+	echo $(addIPtoRouteByDomain "csdn.net" "${gw}");
+	echo $(addIPtoRouteByDomain "51cto.com" "${gw}");
+	echo $(addIPtoRouteByDomain "sina.com.cn" "${gw}");
+	echo $(addIPtoRouteByDomain "baidu.com" "${gw}");
+	echo $(addIPtoRouteByDomain "163.com" "${gw}");
+	echo $(addIPtoRouteByDomain "blog.163.com" "${gw}");
+	echo $(addIPtoRouteByDomain "os.blog.163.com" "${gw}");
+	echo $(addIPtoRouteByDomain "ava.bimg.126.net" "${gw}");
+	echo $(addIPtoRouteByDomain "img.bimg.126.net" "${gw}");
+	echo $(addIPtoRouteByDomain "img841.ph.126.net" "${gw}");
+	echo $(addIPtoRouteByDomain "b1.bst.126.net" "${gw}");
+	echo $(addIPtoRouteByDomain "b2.bst.126.net" "${gw}");
 #	for f in ${docs_sencha_com}
 #	do
 #		f=${f#Address:};
@@ -23,5 +38,6 @@ startbcpnet(){
 	result=${result}$(echo '' && route -n |grep "${gw}");
 	#echo -n ${result};
 	notify-send "${result}";
+	echo "done.";
 }
 startbcpnet;
