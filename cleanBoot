@@ -1,0 +1,11 @@
+#! /bin/sh
+#文件名: cleanBoot
+#2014-6-17 15:27:11
+#author:will-v-king
+cleanBoot(){
+	dpkg --list | grep '^ii  linux-image-[0-9]'|cut -d ' ' -f3;
+	uname -a;
+	echo "execute 'sudo apt-get remove linux-image-2.6.32-3[3-9]{1}-generic-pae' to remove 33,34,35,36,37,38,39.";
+	echo "execute 'sudo apt-get remove linux-image-3.5.0-3{1,7,9}-generic' to remove 31,37,39.";
+}
+cleanBoot;
