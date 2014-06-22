@@ -1,6 +1,6 @@
 #! /bin/bash -
 startbcpnet(){
-	local gw=$(route -n | grep 0.0.0.0 | grep eth | awk '{print $(2)}')
+	local gw=$(route -n | grep ^0.0.0.0 | grep eth | awk '{print $(2)}')
 	local result="startbcpnet result: ";
 	sudo route add -net 192.168.0.0		 gw "${gw}" netmask 255.255.0.0 metric 25;
 	sudo route add -net 172.16.10.0		 gw "${gw}" netmask 255.255.255.0 metric 25;
