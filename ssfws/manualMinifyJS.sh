@@ -1,7 +1,7 @@
 #! /bin/bash -
 # manualMinifyJS
 manualMinifyJS(){
-	local EWPATH="/home/wangz/Workspace/extjs-wise/application/ew/";
+	local EWPATH="/home/wangz/Workspace/extjs-wise/ew/ew/";
 	local PROPATH="/home/wangz/Workspace/eclipse/bcp/com.wisesoft.iimp.web/WebContent/static/js/extjs/application/ews/";
 	local SHARED="shared";
 	local PREDEFINE="pre-define";
