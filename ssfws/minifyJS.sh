@@ -3,6 +3,7 @@
 # NOTICE the destination file must be end with min.js .;
 minifyJS(){
 	local path=".";
+	local listFile="";
 	local sourcePath="";
 	local destinationPath="";
 	local sourceFile="";
@@ -14,7 +15,7 @@ minifyJS(){
 	# Note that we use `"$@"' to let each command-line parameter expand to a 
 	# separate word. The quotes around `$@' are essential!
 	# We need TEMP as the `eval set --' would nuke the return value of getopt.
-	TEMP=`getopt -o p:e:s:n:d: --long path:,sourcePath:,sourceFile:,destinationPath:,destinationFile: \
+	TEMP=`getopt -o p:le:s:n:d: --long path:,sourcePath:,sourceFile:,destinationPath:,destinationFile: \
 		 -n 'example.bash' -- "$@"`
 
 	if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
@@ -24,6 +25,7 @@ minifyJS(){
 	while true ; do
 		case "$1" in
 			-p|--path) path=$2 ; shift 2 ;;
+			-l|--listFile) listFile="yes" ; shift 1 ;;
 			-e|--sourcePath) sourcePath=$2 ; shift 2;;
 			-s|--sourceFile) sourceFile=$2 ; shift 2 ;;
 				## c has an optional argument. As we are in quoted mode,
@@ -87,7 +89,12 @@ minifyJS(){
 	then
 		cd ${sourcePath};
 		# execute uglifyjs base on the list file.
-		uglifyjs -mt -ns -nc drop_debugger:false $(cat ${sourceFileDir} | while read LINE; do echo -n $LINE" "; done;) -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%min.js/debug.js}
-	fi
+		if [ ${listFile} ];
+		then
+			sourceFileDir=$(cat ${sourceFileDir} | while read LINE; do echo -n $LINE" "; done;);
+			#uglifyjs -mt -ns -nc drop_debugger:false $(cat ${sourceFileDir} | while read LINE; do echo -n $LINE" "; done;) -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%min.js/debug.js}
+		fi;
+		uglifyjs -mt -ns -nc drop_debugger:false ${sourceFileDir} -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%min.js/debug.js}
+	fi;
 }
 minifyJS "$@";
