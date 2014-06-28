@@ -10,9 +10,11 @@ addIPtoRouteByDomain(){
 	local ipAddr=$(getIPbyDomain "${domainAddr}");
 	local gw=${2};
 	case "${gw}" in
-		"")
-			gw=$(route -n | grep ^0.0.0.0 | grep eth | awk '{print $(2)}') ;;
-		*) ;;
+		"") gw=$(route -n | grep ^0.0.0.0 | grep eth | awk '{print $(2)}');
+		echo "Gateway ${gw} has been auto detected.";
+		;;
+		*) echo "Gateway is "${gw};
+		;;
 	esac
 	for f in ${ipAddr}
 	do
@@ -22,6 +24,6 @@ addIPtoRouteByDomain(){
 			*)  sudo route add -net "${f}"	gw "${gw}" netmask 255.255.255.255 metric 25; echo -n "add ${f} "; ;;
 		esac
 	done;
-	echo "done.";
+	echo "done."
 }
 addIPtoRouteByDomain ${1} ${2};
