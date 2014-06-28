@@ -26,6 +26,7 @@ startbcpnet(){
 	echo $(addIPtoRouteByDomain "img841.ph.126.net" "${gw}");
 	echo $(addIPtoRouteByDomain "b1.bst.126.net" "${gw}");
 	echo $(addIPtoRouteByDomain "b2.bst.126.net" "${gw}");
+	echo $(addIPtoRouteByDomain "pimg1.126.net" "${gw}");
 #	for f in ${docs_sencha_com}
 #	do
 #		f=${f#Address:};
