@@ -10,12 +10,13 @@ minifyJS(){
 	local destinationFile="";
 	local sourceFileDir="";
 	local destinationFileDir="";
+	local suffix="-debug.js";
 	## STARTRegion LongOption
 	# from /usr/share/doc/util-linux/examples/getopt-parse.bash
 	# Note that we use `"$@"' to let each command-line parameter expand to a 
 	# separate word. The quotes around `$@' are essential!
 	# We need TEMP as the `eval set --' would nuke the return value of getopt.
-	TEMP=`getopt -o p:le:s:n:d: --long path:,sourcePath:,sourceFile:,destinationPath:,destinationFile: \
+	TEMP=`getopt -o p:le:s:n:d:x: --long path:,sourcePath:,sourceFile:,destinationPath:,destinationFile:,suffix: \
 		 -n 'example.bash' -- "$@"`
 
 	if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
@@ -37,6 +38,7 @@ minifyJS(){
 				#esac ;;
 			-n|--destinationPath) destinationPath=$2 ; shift 2 ;;
 			-d|--destinationFile) destinationFile=$2 ; shift 2 ;;
+			-x|--suffix) suffix=$2 ; shift 2 ;;
 			--) shift ; break ;;
 			*) echo "Internal error!" ; exit 1 ;;
 		esac
@@ -94,7 +96,7 @@ minifyJS(){
 			sourceFileDir=$(cat ${sourceFileDir} | while read LINE; do echo -n $LINE" "; done;);
 			#uglifyjs -mt -ns -nc drop_debugger:false $(cat ${sourceFileDir} | while read LINE; do echo -n $LINE" "; done;) -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%min.js/debug.js}
 		fi;
-		uglifyjs -mt -ns -nc drop_debugger:false ${sourceFileDir} -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%min.js/debug.js}
+		uglifyjs -mt -ns -nc drop_debugger:false ${sourceFileDir} -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%-min.js/${suffix}}
 	fi;
 }
 minifyJS "$@";
