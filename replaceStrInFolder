@@ -6,9 +6,12 @@
 
 
 #sed -i "s/$1/$2/g" `grep "$1" -rl --exclude=*.svn* --exclude=*.swp "$3"`
+
+#replaceStrInFolder "\(<link\ rel\=\"stylesheet\" href\=\"http:\/\/fonts.googleapis.com\/css[^\!]*\"\ \/>\)" "<\!--\1-->" .
 sourceFile=${3};
 if [ -f ${sourceFile} ];
 then
+	echo $sourceFile;
 	while read -r line ;
 	do
 		echo ${line};
