@@ -96,7 +96,9 @@ minifyJS(){
 			sourceFileDir=$(cat ${sourceFileDir} | while read LINE; do echo -n $LINE" "; done;);
 			#uglifyjs -mt -ns -nc drop_debugger:false $(cat ${sourceFileDir} | while read LINE; do echo -n $LINE" "; done;) -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%min.js/debug.js}
 		fi;
-		uglifyjs -mt -ns -nc drop_debugger:false ${sourceFileDir} -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%-min.js/${suffix}}
+		#uglifyjs -mt -ns -nc drop_debugger:false ${sourceFileDir} -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%-min.js/${suffix}}
+		# for node-uglifyjs
+		uglifyjs -mt -ns -nc -o ${destinationFileDir} ${sourceFileDir} && uglifyjs -b -o ${destinationPath}${destinationFile/%-min.js/${suffix}} ${destinationFileDir}
 	fi;
 }
 minifyJS "$@";
