@@ -98,7 +98,7 @@ minifyJS(){
 		fi;
 		#uglifyjs -mt -ns -nc drop_debugger:false ${sourceFileDir} -o ${destinationFileDir} && uglifyjs -b beautify:false ${destinationFileDir} -o ${destinationPath}${destinationFile/%-min.js/${suffix}}
 		# for node-uglifyjs
-		uglifyjs -mt -ns -nc -o ${destinationFileDir} ${sourceFileDir} && uglifyjs -b -o ${destinationPath}${destinationFile/%-min.js/${suffix}} ${destinationFileDir}
+		uglifyjs -ns --comments '^[\ \/]*\*\ \@' -b -o ${destinationPath}${destinationFile/%-min.js/-omg.js} ${sourceFileDir} && uglifyjs -mt -ns --source-map ${destinationPath}${destinationFile/%-min.js/-min.map} --source-map-url ${destinationPath}${destinationFile/%-min.js/-min.map} --comments '^[\ \/]*\*\ \@' -nc -o ${destinationFileDir} ${destinationPath}${destinationFile/%-min.js/-omg.js} && uglifyjs -mt -ns --comments '^[\ \/]*\*\ \@' -b -o ${destinationPath}${destinationFile/%-min.js/${suffix}} ${sourceFileDir}
 	fi;
 }
 minifyJS "$@";
