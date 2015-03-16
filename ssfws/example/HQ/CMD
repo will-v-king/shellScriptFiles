@@ -1,0 +1,27 @@
+#! /bin/bash -
+#####################
+. /etc/profile
+. ~/.bashrc
+#############
+PRG="$0"
+PRGDIR=`dirname "$PRG"`
+#notify-send "${PRGDIR}""/""NetOfficeCMD";
+echo "`date`" >> /home/lenovo/log.log;
+echo "CMD:$PRGDIR" >> /home/lenovo/log.log
+#step = 30;
+#for (( i = 0; i < 30; i=(i+step) )); do
+#echo $PATH;
+#    sleep $step
+#done
+	#bash "${PRGDIR}/NetOfficeCMD" >> /home/lenovo/log.log;
+workspace="/media/sf_D_DRIVE/Workspace/";
+	bash "${PRGDIR}/CMDLST" # >> /home/lenovo/log.log;
+#	bash ${PRGDIR}/jTableBuilder.sh -l -p /media/sf_D_DRIVE/Workspace/2014-09-09_personalTools/jquery-collection/jquery-skinner/js/ -s jquery.jquery-skinner.build.txt
+#	# ~/bin/ssfws/minifyJS.sh -e /media/sf_D_DRIVE/Workspace/2014-09-09_personalTools/jquery-collection/jquery-skinner/js/ -s jquery-skinner.js -d jquery-skinner-min.js
+#	#bash "${PRGDIR}/jskinnerCMD" >> /home/lenovo/log.log;
+#	bash "${PRGDIR}/nestedCMD" >> /home/lenovo/log.log;
+#	#bash "${PRGDIR}/minCMD \"{workspace}2014-08-29_Net_Office/NEW/2015/WebOffice/WAAttendanceManagement/\" \"Scripts/AttendanceMark/\" \"lst\"" >> /home/lenovo/log.log;
+#	bash ${PRGDIR}/minCMD "${workspace}2014-08-29_Net_Office/NEW/2015/WebOffice/WAAttendanceManagement/" "Scripts/AttendanceMark/" "lst" "201502160647" # >> /home/lenovo/log.log
+#	bash ${PRGDIR}/minCMD ${workspace}2014-08-29_Net_Office/NEW/WebApplication1/WAIntegrationManagement/ Scripts/main/ lst 201502150347 # >> /home/lenovo/log.log
+#	bash "${PRGDIR}/jTableCMD" # >> /home/lenovo/log.log;
+exit 0
