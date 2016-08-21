@@ -9,6 +9,8 @@ startbcpnet(){
 	sudo route add -net 54.230.23.0		 gw "${gw}" netmask 255.255.255.0 metric 25; # docs.sencha.com
 		#local docs_sencha_com=$(nslookup docs.sencha.com |grep Address:[[:space:]][0-9.]*$);
 		#echo ${docs_sencha_com//Address:/}
+	echo $(addIPtoRouteByDomain "z.cn" "${gw}");
+	echo $(addIPtoRouteByDomain "amazon.cn" "${gw}");
 	echo $(addIPtoRouteByDomain "docs.sencha.com" "${gw}");
 	echo $(addIPtoRouteByDomain "dict.youdao.com" "${gw}");
 	echo $(addIPtoRouteByDomain "subclipse.tigris.org" "${gw}"); #eclipse subclipse plugin.;

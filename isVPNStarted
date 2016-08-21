@@ -1,0 +1,26 @@
+#!/bin/bash -
+
+# check if the VPN started correctly.
+isVPNStarted(){
+	local prevStat="-";
+	while true;
+		do local hasTun=$(ifconfig | grep tun);
+		if [ "${hasTun}" != "" ];
+			then 
+				if [ ${prevStat} == "-" ];
+				then prevStat="+";
+					notify-send " VPN Connected $(echo ' ' && ifconfig | grep tun )";
+				fi;
+				echo -n ${prevStat};
+				sleep 60;
+			else 
+				if [ ${prevStat} == "+" ];
+				then prevStat="-";
+					notify-send "VPN Disconnected";
+				fi;
+				echo -n ${prevStat};
+				sleep 5;
+		fi;
+	done;
+}
+isVPNStarted;
