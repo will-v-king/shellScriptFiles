@@ -2,11 +2,11 @@
 startbcpnet(){
 	local gw=$(route -n | grep ^0.0.0.0 | grep eth | awk '{print $(2)}')
 	local result="startbcpnet result: ";
-	sudo route add -net 192.168.0.0		 gw "${gw}" netmask 255.255.0.0 metric 25;
-	sudo route add -net 172.16.10.0		 gw "${gw}" netmask 255.255.255.0 metric 25;
-	sudo route add -net 125.69.90.49	 gw "${gw}" netmask 255.255.255.255 metric 25;
-	sudo route add -net 221.237.182.205	 gw "${gw}" netmask 255.255.255.255 metric 25;
-	sudo route add -net 54.230.23.0		 gw "${gw}" netmask 255.255.255.0 metric 25; # docs.sencha.com
+	#sudo route add -net 192.168.0.0		 gw "${gw}" netmask 255.255.0.0 metric 25;
+	#sudo route add -net 172.16.10.0		 gw "${gw}" netmask 255.255.255.0 metric 25;
+	#sudo route add -net 125.69.90.49	 gw "${gw}" netmask 255.255.255.255 metric 25;
+	#sudo route add -net 221.237.182.205	 gw "${gw}" netmask 255.255.255.255 metric 25;
+	#sudo route add -net 54.230.23.0		 gw "${gw}" netmask 255.255.255.0 metric 25; # docs.sencha.com
 		#local docs_sencha_com=$(nslookup docs.sencha.com |grep Address:[[:space:]][0-9.]*$);
 		#echo ${docs_sencha_com//Address:/}
 	echo $(addIPtoRouteByDomain "z.cn" "${gw}");
@@ -28,6 +28,7 @@ startbcpnet(){
 	echo $(addIPtoRouteByDomain "img841.ph.126.net" "${gw}");
 	echo $(addIPtoRouteByDomain "b1.bst.126.net" "${gw}");
 	echo $(addIPtoRouteByDomain "b2.bst.126.net" "${gw}");
+	echo $(addIPtoRouteByDomain "pimg1.126.net" "${gw}");
 #	for f in ${docs_sencha_com}
 #	do
 #		f=${f#Address:};
